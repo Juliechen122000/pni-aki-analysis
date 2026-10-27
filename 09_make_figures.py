@@ -53,8 +53,8 @@ def save(fig, name):
 rows = [
     ("INSPIRE  Model A (minimal)",  1.613, 1.492, 1.745, C_MAIN, "s"),
     ("INSPIRE  Model B (primary)",  1.466, 1.349, 1.593, C_MAIN, "s"),
-    ("MOVER  Model A (complete case)", 1.461, 1.310, 1.628, C_ALT, "o"),
-    ("MOVER  Model A (imputed, m=20)", 1.444, 1.310, 1.591, C_ALT, "o"),
+    ("MOVER  Model A (complete case)", 1.437, 1.285, 1.606, C_ALT, "o"),
+    ("MOVER  Model A (imputed, m=20)", 1.447, 1.306, 1.602, C_ALT, "o"),
     ("INSPIRE  serum albumin (Model B comparator)", 1.436, 1.330, 1.551, C_GREY, "D"),
 ]
 fig, ax = plt.subplots(figsize=(7.0, 3.0))
@@ -153,27 +153,19 @@ save(fig, "fig2_trajectory_increment")
 # =====================================================================
 # Fig 3  检测密度梯度（两国）
 # =====================================================================
-sb = pd.read_csv(os.path.join(OUT, "selection_bias_results.csv"))
-gi = sb[sb.analysis.astype(str).str.startswith("E_quintile_gradient_INSPIRE")]
-gm = sb[sb.analysis.astype(str).str.startswith("E_quintile_gradient_MOVER")]
-
-
-def rate(df):
-    v = []
-    for q in ["Q1", "Q2", "Q3", "Q4", "Q5"]:
-        r = df[df.model.astype(str).str.endswith(q)]
-        v.append(float(r.OR.iloc[0]) * 100 if len(r) else np.nan)
-    return np.array(v)
-
-
-ri, rm = rate(gi), rate(gm)
+# 数值取自 Supplementary Table S2 Panel A（IN 锚定，2026-10-27 冻结），
+# 与正文 Results / 表 / 图保持一致；不再读 selection_bias_results.csv
+# （该文件 Q4/Q5 的 tie 分配偏 1 例，且 MOVER 行为 OUT 锚定 1,338 时代值）。
+INSPIRE_Q = [0.94, 2.94, 5.94, 9.51, 27.52]    # median Cr draws 2/4/5/6/8, n=7,995
+MOVER_Q   = [1.97, 7.87, 21.26, 33.46, 65.75]  # median Cr draws 1/2/5/8/16, n=1,270
+ri, rm = np.array(INSPIRE_Q), np.array(MOVER_Q)
 xi = np.arange(5)
 
 fig, ax = plt.subplots(figsize=(7.0, 3.2))
 ax.plot(xi, ri, "-s", color=C_MAIN, lw=1.8, ms=5.5, mec="white", mew=0.8,
         label="INSPIRE (Republic of Korea), n=7,995")
 ax.plot(xi, rm, "-o", color=C_ALT, lw=1.8, ms=5.5, mec="white", mew=0.8,
-        label="MOVER (United States), n=1,338")
+        label="MOVER (United States), n=1,270")
 for x, y in zip(xi, ri):
     if x == 0:
         ax.annotate(f"{y:.1f}%", (x, y), textcoords="offset points",
@@ -185,8 +177,8 @@ for x, y in zip(xi, rm):
     ax.annotate(f"{y:.1f}%", (x, y), textcoords="offset points", xytext=(0, 9),
                 ha="center", fontsize=6.8, color=C_ALT)
 ax.set_xticks(range(5))
-ax.set_xticklabels(["Q1\n2 vs 1", "Q2\n4 vs 3", "Q3\n5 vs 6",
-                    "Q4\n6 vs 8", "Q5\n8 vs 17"], fontsize=7)
+ax.set_xticklabels(["Q1\n2 vs 1", "Q2\n4 vs 2", "Q3\n5 vs 5",
+                    "Q4\n6 vs 8", "Q5\n8 vs 16"], fontsize=7)
 ax.set_xlim(-0.45, 4.55)
 ax.set_xlabel("Within-cohort quintile of creatinine testing density\n"
               "(median number of creatinine measurements, INSPIRE vs MOVER)",
@@ -201,9 +193,9 @@ save(fig, "fig3_surveillance_gradient")
 # Fig 4  校正前后衰减（dumbbell）
 # =====================================================================
 pairs = [
-    ("INSPIRE  Model A (minimal)", 1.613, 1.433, "\u221211.2%", C_MAIN),
+    ("INSPIRE  Model A (minimal)", 1.613, 1.433, "\u221211.1%", C_MAIN),
     ("INSPIRE  Model B (primary)", 1.466, 1.350, "\u22127.9%", C_MAIN),
-    ("MOVER  Model A (complete case)", 1.461, 1.329, "\u22129.0%", C_ALT),
+    ("MOVER  Model A (complete case)", 1.437, 1.321, "\u22128.1%", C_ALT),
 ]
 
 fig, ax = plt.subplots(figsize=(7.0, 3.0))

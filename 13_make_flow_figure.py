@@ -88,13 +88,13 @@ RYS = [9.05, 7.80, 6.75, 5.45, 4.30]
 box(RX, RYS[0], RW, BH, "Operations in source database\n64,354 (39,683 patients)", bold=True)
 box(RX, RYS[1], RW, BH, "Abdominal surgery\n(ICD-10-PCS 0D or 0F), ≥120 min\nn = 9,022 (5,710 patients)")
 box(RX, RYS[2], RW, BH, "First operation per patient\nn = 5,710")
-box(RX, RYS[3], RW, BH, "Preoperative PNI and creatinine\navailable\nn = 1,432")
-box(RX, RYS[4], RW, 0.78, "n = 1,338 analysed\n352 with AKI (26.31%)", bold=True, fc="#F2F2F2")
+box(RX, RYS[3], RW, BH, "Preoperative PNI and creatinine\navailable\nn = 1,362")
+box(RX, RYS[4], RW, 0.78, "n = 1,270 analysed\n331 with AKI (26.06%)", bold=True, fc="#F2F2F2")
 
 REX = {0: "55,332 not abdominal\nor under 120 min",
        1: "3,312 repeat\noperations",
-       2: "4,278 PNI or\ncreatinine not available",
-       3: "94 creatinine\n≥3.0 mg/dL"}
+       2: "4,348 PNI or\ncreatinine not available",
+       3: "92 creatinine\n≥3.0 mg/dL"}
 for i in range(len(RYS) - 1):
     y_top = RYS[i] - BH / 2 - 0.03
     y_bot = RYS[i + 1] + (0.78 / 2 if i + 1 == len(RYS) - 1 else BH / 2) + 0.03
