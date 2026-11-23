@@ -73,6 +73,13 @@ there.
 11. `r/05b_lcmm_grid.R`, `r/06b_lcmm_adjusted.R`, `r/10b_bic_model.R` — latent
     class trajectory models and the outcome-blind BIC comparator.
 
+12. `17_low_bp_extract.py`, `19_fluid_transfuse_extract.py`, `21_vasopressor_extract.py` —
+    extract intraoperative exposures (hypotension, fluids/transfusion, vasopressors)
+    from `vitals.csv.gz` into `$INSPIRE_OUT`.
+13. `18_low_bp_sensitivity.py`, `20_fluid_sensitivity.py`,
+    `22_combined_intraop_sensitivity.py` — add those intraoperative exposures to
+    Model B as sensitivity analyses.
+
 `test_aki_rolling.py` exercises `aki_rolling.py` (the AKI criterion function)
 against fixed edge cases; run it after cloning to confirm the outcome
 implementation is intact.
