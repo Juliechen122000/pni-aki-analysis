@@ -20,6 +20,7 @@ POST_HI = 7.0
 ABS_WIN_D = 2.0     # 48 h
 ABS_DELTA = 0.3
 REL_WIN_D = 7.0
+TOL = 1e-9          # 浮点容差：仅吸收 IEEE-754 表示误差（十进制恰好等于阈值的配对）
 
 
 def judge_aki(t, c, ref_rule="min", preop_base=None):
@@ -80,7 +81,7 @@ def judge_aki(t, c, ref_rule="min", preop_base=None):
             any_eval = True
             diffs = ci - c[prior_abs]
             j = int(np.argmax(diffs))
-            if diffs[j] >= ABS_DELTA:
+            if diffs[j] >= ABS_DELTA - TOL:
                 abs_hit = True
                 abs_detail = "abs +%.2f/%.2fd" % (
                     diffs[j], ti - t[prior_abs[j]])
@@ -104,7 +105,7 @@ def judge_aki(t, c, ref_rule="min", preop_base=None):
                     ref = float(c[prior_rel[-1]])
 
         ratio = ci / ref if (np.isfinite(ref) and ref > 0) else np.nan
-        rel_hit = bool(np.isfinite(ratio) and ratio >= 1.5)
+        rel_hit = bool(np.isfinite(ratio) and ratio >= 1.5 - TOL)
         if rel_hit:
             rel_detail = "rel %.2fx" % ratio
 
@@ -112,11 +113,11 @@ def judge_aki(t, c, ref_rule="min", preop_base=None):
         s = 0
         if abs_hit or rel_hit:
             s = 1
-        if np.isfinite(ratio) and ratio >= 2.0:
+        if np.isfinite(ratio) and ratio >= 2.0 - TOL:
             s = 2
-        if np.isfinite(ratio) and ratio >= 3.0:
+        if np.isfinite(ratio) and ratio >= 3.0 - TOL:
             s = 3
-        if ci >= 4.0 and (abs_hit or rel_hit):
+        if ci >= 4.0 - TOL and (abs_hit or rel_hit):
             s = 3
 
         if s >= 1 and not np.isfinite(first_time):
